@@ -1,0 +1,42 @@
+# Segredos e ambiente
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+
+# Claude Code (configuração pessoal)
+.claude/settings.local.json
+.claude/agent-memory-local/
+CLAUDE.local.md
+
+# Java / Maven
+target/
+*.class
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+ml-service/models/
+
+# Node
+node_modules/
+dist/
+coverage/
+
+# IDE e sistema
+.idea/
+*.iml
+.vscode/*
+!.vscode/extensions.json
+.DS_Store
+Thumbs.db
+
+# Logs e dados locais
+*.log
+infra/data/

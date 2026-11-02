@@ -1,0 +1,8 @@
+title = "TrendGap"
+
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Arquivo de exemplo sem valores reais"
+paths = ['''\.env\.example$''']
