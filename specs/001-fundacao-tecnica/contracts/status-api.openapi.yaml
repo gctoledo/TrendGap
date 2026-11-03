@@ -1,0 +1,53 @@
+# Contrato público do backend consumido pelo frontend (documentação de desenho).
+openapi: 3.0.3
+info:
+  title: TrendGap backend - status
+  version: 0.1.0
+paths:
+  /api/status:
+    get:
+      operationId: getStatus
+      summary: Aggregated health of backend, database and ML service
+      description: >
+        Always 200 when the backend answers. Each component reports only UP or DOWN and the
+        time its probe finished. No versions, hosts, exception messages or configuration.
+      tags: [status]
+      responses:
+        "200":
+          description: Status per component
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SystemStatus"
+              example:
+                components:
+                  - { name: backend, status: UP, checkedAt: "2026-11-03T12:00:00.120Z" }
+                  - { name: database, status: UP, checkedAt: "2026-11-03T12:00:00.118Z" }
+                  - { name: ml-service, status: DOWN, checkedAt: "2026-11-03T12:00:02.101Z" }
+components:
+  schemas:
+    SystemStatus:
+      type: object
+      additionalProperties: false
+      required: [components]
+      properties:
+        components:
+          type: array
+          minItems: 3
+          maxItems: 3
+          items:
+            $ref: "#/components/schemas/ComponentStatus"
+    ComponentStatus:
+      type: object
+      additionalProperties: false
+      required: [name, status, checkedAt]
+      properties:
+        name:
+          type: string
+          enum: [backend, database, ml-service]
+        status:
+          type: string
+          enum: [UP, DOWN]
+        checkedAt:
+          type: string
+          format: date-time
