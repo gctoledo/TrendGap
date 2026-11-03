@@ -19,7 +19,7 @@ contracts/ OpenAPI · infra/ Docker Compose · specs/ Spec Kit · docs/ ADRs e d
 2. Lógica de domínio: testes primeiro com o subagente test-writer; depois implemente até ficar verde.
 3. Fonte, score, canal ou marketplace novo = adaptador que implementa uma porta. Nunca altere o núcleo para isso.
 4. Probabilidade nunca vem do LLM.
-5. Toda chamada a provedor pago passa pelo CostMeter.
+5. Nenhum provedor pago entra sem limite de gasto configurado no painel do próprio provedor; o controle de custo na aplicação está adiado (ADR-0014).
 6. Nunca leia, crie ou commite segredos. Configuração nova = variável de ambiente documentada sem valor em .env.example.
 7. Nada de dados pessoais de terceiros: só agregados sobre temas.
 8. Dependência nova ou padrão relevante: pare e proponha um ADR (skill new-adr) antes de usar.

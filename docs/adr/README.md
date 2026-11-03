@@ -15,3 +15,4 @@
 | 0011 | [SDK oficial Anthropic para Java atrás de LlmPort](0011-sdk-anthropic-java-atras-de-llmport.md) | aceito | 2026-11-02 |
 | 0012 | [Observabilidade com logs JSON, Micrometer e OpenTelemetry](0012-observabilidade-otel-micrometer.md) | aceito | 2026-11-02 |
 | 0013 | [Desenvolvimento com agentes (Spec Kit e Claude Code)](0013-desenvolvimento-com-agentes.md) | aceito | 2026-11-02 |
+| 0014 | [Adiar o controle de custo dentro da aplicação](0014-adiar-controle-de-custo-na-aplicacao.md) | aceito | 2026-11-03 |

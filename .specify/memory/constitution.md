@@ -1,34 +1,28 @@
 <!--
 SYNC IMPACT REPORT — remover antes do commit
 =============================================
-Versão anterior: (nenhuma — criação inicial)
-Versão nova: 1.0.0
-Mudança de versão: n/a → 1.0.0 (primeira ratificação)
+Versão anterior: 1.0.0
+Versão nova: 2.0.0
+Mudança de versão: 1.0.0 → 2.0.0 (MAJOR: princípio V redefinido — remove a exigência
+  de CostMeter, tetos e alertas na aplicação; troca por limite no painel do provedor)
+Última emenda: 2026-11-03
 
-Seções adicionadas:
-  - Princípios I a IX (9 princípios no total; o template previa 5 — expandido conforme rascunho)
-  - Restrições Técnicas
-  - Fluxo de Desenvolvimento
-  - Governança
+Princípios modificados: V (texto substituído exatamente como fornecido; título
+  "Custo sob controle" mantido). Princípios I–IV e VI–IX inalterados.
+Seções adicionadas: nenhuma
+Seções removidas: nenhuma
 
-Seções removidas: n/a
+Propagação:
+  - Templates do Spec Kit (plan/spec/tasks/checklist): verificados; nenhum cita
+    CostMeter ou teto na aplicação (leem a constituição em tempo de execução).
+    Nenhum arquivo alterado, conforme o Scope Guard.
 
-Princípios renomeados: n/a
-
-TODOs diferidos: nenhum — todos os campos foram preenchidos a partir de
-  docs/constitution-draft.md e dos parâmetros fornecidos pelo usuário.
-
-Nota de interpretação:
-  O template previa 5 slots de princípio; o rascunho contém 9. O comando prevê
-  expansão ("The user might require less or more principles"), por isso os 9
-  princípios foram preservados integralmente.
-  A instrução "propague as verificações para os modelos de plano, spec e tarefas"
-  refere-se ao comportamento em tempo de execução dos próprios templates do Spec Kit
-  (que lêem esta constituição automaticamente). Nenhum template foi modificado aqui
-  — o Scope Guard confirma que isso está fora do escopo deste comando.
-  Linguagem normativa (DEVE, NÃO PODE, SOMENTE, OBRIGATÓRIO) foi capitalizada para
-  garantir que os princípios sejam declarativos e testáveis, sem alterar o sentido
-  original do rascunho.
+TODOs / inconsistências pendentes (fora do escopo desta emenda):
+  - Princípio III ainda cita "controle de custo" (TDD) e "custo registrado, respeito ao
+    teto" (suíte de contrato dos coletores); Princípio VII cita custo por coletor.
+    Não alterados por instrução ("nenhum outro princípio").
+  - .claude/agents/reviewer.md:17 e CLAUDE.md (regra 5) ainda exigem CostMeter.
+  - Criar o ADR-0014 (adiamento do controle de custo na aplicação).
 =============================================
 -->
 
@@ -64,12 +58,7 @@ A probabilidade de um tema virar tendência vem de um modelo estatístico calibr
 por backtest temporal e identificado por versão. O LLM SOMENTE extrai, classifica e redige
 (fichas, checklists V e P). Um modelo só é promovido se o backtest não piorar.
 
-### V. Custo sob controle
-
-Toda chamada a provedor pago DEVE passar pelo CostMeter, que estima antes e registra depois.
-Cada provedor tem teto mensal global; ao atingir 80% o sistema alerta, a 100% para o coletor
-e avisa o ADMIN. Ações disparadas por usuário consomem a cota dele. O orçamento total de dados
-e LLM é US$ 20/mês. Antes do LLM DEVEM vir filtragem, deduplicação, cache e Batch API.
+### V. Custo sob controle — O orçamento total de dados e LLM da aplicação é US$ 20/mês. Antes de ligar qualquer provedor pago, um limite de gasto DEVE ser configurado no painel do próprio provedor (saldo pré-pago, teto mensal ou limite de gasto) dentro desse orçamento. Antes do LLM vêm filtragem, deduplicação, cache e Batch API. O controle de custo dentro da aplicação (medição por chamada, tetos e alertas) está adiado e será reavaliado antes da entrada do primeiro provedor pago (ADR-0014).
 
 ### VI. Segurança e privacidade por padrão
 
@@ -123,4 +112,4 @@ Esta constituição prevalece sobre todas as outras práticas. Emendas entram po
 atualização de versão semântica (MAJOR: princípio removido ou redefinido; MINOR: princípio
 novo; PATCH: redação). Todo plano DEVE passar pelo "Constitution Check" do Spec Kit.
 
-**Versão**: 1.0.0 | **Ratificada em**: 2026-11-02 | **Última emenda**: 2026-11-02
+**Versão**: 2.0.0 | **Ratificada em**: 2026-11-02 | **Última emenda**: 2026-11-03
