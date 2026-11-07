@@ -17,6 +17,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.function.Consumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,8 +29,18 @@ public class StatusService {
   private final Map<ComponentName, ComponentProbe> probes = new EnumMap<>(ComponentName.class);
   private final Duration probeTimeout;
   private final Clock clock;
+  private final List<Consumer<SystemStatus>> listeners;
 
   public StatusService(List<ComponentProbe> probes, Duration probeTimeout, Clock clock) {
+    this(probes, probeTimeout, clock, List.of());
+  }
+
+  public StatusService(
+      List<ComponentProbe> probes,
+      Duration probeTimeout,
+      Clock clock,
+      List<Consumer<SystemStatus>> listeners) {
+    this.listeners = List.copyOf(listeners);
     for (ComponentProbe probe : probes) {
       this.probes.put(probe.name(), probe);
     }
@@ -65,7 +76,9 @@ public class StatusService {
       // Do not wait for probes stuck in blocking I/O: their results were already marked DOWN.
       executor.shutdownNow();
     }
-    return new SystemStatus(List.copyOf(results));
+    var status = new SystemStatus(List.copyOf(results));
+    listeners.forEach(listener -> listener.accept(status));
+    return status;
   }
 
   private ComponentHealth run(ComponentProbe probe) {

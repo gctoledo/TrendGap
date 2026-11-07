@@ -4,9 +4,11 @@ import io.github.gctoledo.trendgap.platform.config.TrendGapProperties;
 import io.github.gctoledo.trendgap.platform.status.adapter.out.database.DatabaseProbe;
 import io.github.gctoledo.trendgap.platform.status.application.ComponentProbe;
 import io.github.gctoledo.trendgap.platform.status.application.StatusService;
+import io.github.gctoledo.trendgap.platform.status.domain.SystemStatus;
 import java.time.Clock;
 import java.time.Duration;
 import java.util.List;
+import java.util.function.Consumer;
 import javax.sql.DataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,11 +26,15 @@ public class StatusConfig {
   }
 
   @Bean
-  StatusService statusService(List<ComponentProbe> probes, TrendGapProperties properties) {
+  StatusService statusService(
+      List<ComponentProbe> probes,
+      TrendGapProperties properties,
+      List<Consumer<SystemStatus>> statusListeners) {
     return new StatusService(
         probes,
         slowest(properties.ml().timeout(), DB_TIMEOUT).plus(PROBE_MARGIN),
-        Clock.systemUTC());
+        Clock.systemUTC(),
+        statusListeners);
   }
 
   private static Duration slowest(Duration a, Duration b) {

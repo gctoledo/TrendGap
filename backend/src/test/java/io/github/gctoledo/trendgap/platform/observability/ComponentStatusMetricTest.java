@@ -24,6 +24,7 @@ import javax.sql.DataSource;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.server.LocalManagementPort;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
@@ -97,7 +98,8 @@ class ComponentStatusMetricTest {
         "trendgap.db.url=jdbc:postgresql://localhost:5432/unused",
         "trendgap.db.username=unused",
         "trendgap.db.password=unused",
-        "trendgap.ml.base-url=http://localhost:9"
+        "trendgap.ml.base-url=http://localhost:9",
+        "management.endpoint.health.validate-group-membership=false"
       })
   @Nested
   class PrometheusEndpointTest {
@@ -107,12 +109,12 @@ class ComponentStatusMetricTest {
 
     @LocalServerPort int port;
 
-    private static final int MANAGEMENT_PORT = freePort();
+    @LocalManagementPort int managementPort;
 
     @DynamicPropertySource
     static void properties(DynamicPropertyRegistry registry) {
       registry.add("trendgap.http.port", PrometheusEndpointTest::freePort);
-      registry.add("trendgap.management.port", () -> MANAGEMENT_PORT);
+      registry.add("trendgap.management.port", PrometheusEndpointTest::freePort);
     }
 
     private static int freePort() {
@@ -135,7 +137,7 @@ class ComponentStatusMetricTest {
       var scrape =
           client.send(
               HttpRequest.newBuilder(
-                      URI.create("http://localhost:" + MANAGEMENT_PORT + "/actuator/prometheus"))
+                      URI.create("http://localhost:" + managementPort + "/actuator/prometheus"))
                   .build(),
               HttpResponse.BodyHandlers.ofString());
 
