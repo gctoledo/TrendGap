@@ -20,3 +20,4 @@ O TypeScript fica na 6.0.3 porque o `typescript-eslint` 8.72 declara peer `types
 ## Consequências
 - Positivas: polling e reexecução sem código próprio de timer; regras de tipo no lint; testes sem dependência de rede.
 - Negativas: o TypeScript fica atrás da 7 até o `typescript-eslint` suportar; `frontend/` tem lockfile próprio, sem workspace na raiz, e precisa ser atualizado à parte.
+- Dependências de apoio: `@testing-library/dom` (peer do Testing Library) e `@types/node` (tipos do `vite.config.ts`); `@eslint/js` e `eslint/config` compõem a configuração flat do ESLint.

@@ -92,7 +92,7 @@ specs/001-fundacao-tecnica/
 ├── quickstart.md
 ├── contracts/
 │   ├── README.md
-│   ├── ml-service.openapi.yaml     # rascunho; vai para contracts/ na raiz
+│   ├── ml-service.openapi.yaml     # movido para contracts/ na raiz (T014); ver contracts/README.md
 │   └── status-api.openapi.yaml
 └── tasks.md                        # /speckit-tasks
 ```
