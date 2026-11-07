@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: trendgap
+  threads:
+    virtual:
+      enabled: true
+  datasource:
+    url: ${trendgap.db.url:}
+    username: ${trendgap.db.username:}
+    password: ${trendgap.db.password:}
+    hikari:
+      connection-timeout: 2s
+
+server:
+  port: ${trendgap.http.port:8080}
+
+management:
+  server:
+    port: ${trendgap.management.port:8081}

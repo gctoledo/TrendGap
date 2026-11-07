@@ -24,8 +24,8 @@
     <nullaway.version>0.14.3</nullaway.version>
     <spotless.version>3.11.0</spotless.version>
     <jacoco.version>0.8.16</jacoco.version>
-    <!-- Limite de cobertura desligado até T016, primeira tarefa com lógica (ADR-0017). -->
-    <jacoco.check.skip>true</jacoco.check.skip>
+    <!-- Limite de cobertura ligado em T016, primeira tarefa com lógica (ADR-0017); desligável com -Djacoco.check.skip=true. -->
+    <jacoco.check.skip>false</jacoco.check.skip>
   </properties>
 
   <dependencyManagement>
