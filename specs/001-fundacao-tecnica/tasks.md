@@ -128,7 +128,7 @@ tarefa que usa o que ele cobre (ver Dependências). Verificação comum: arquivo
 
 - [x] T050 [US3] Teste: `scripts/check-env-example.sh`: extrai as variáveis `TRENDGAP_*`/`OTEL_*`/`POSTGRES_*` de `application.yaml`, `settings.py` e `infra/compose.yaml` e exige cada uma em `.env.example`, com comentário de descrição e obrigatoriedade e valor vazio ou fictício. Vermelho até T051. Verificação: `scripts/check-env-example.sh` (falha esperada)
 - [x] T051 [US3] Completar `.env.example` com todas as variáveis de data-model §4 (backend, ML, infra), descrição, obrigatoriedade, padrão e valor vazio/fictício. Verificação: `scripts/check-env-example.sh && gitleaks detect --no-git --source .env.example`
-- [ ] T052 [US3] `scripts/check-failfast.sh`: roda `docker compose run --rm` com `TRENDGAP_ML_BASE_URL=` vazia, `TRENDGAP_ML_TIMEOUT=10m` e `TRENDGAP_ML_PORT=abc`; exige saída ≠ 0, nome da variável e regra na saída, e que o valor informado não apareça; para o backend isso exercita o `ConfigFailureAnalyzer` pelo caminho real (`SpringApplication`), conferindo o bloco "APPLICATION FAILED TO START". Verificação: `scripts/check-failfast.sh`
+- [x] T052 [US3] `scripts/check-failfast.sh`: roda `docker compose run --rm` com `TRENDGAP_ML_BASE_URL=` vazia, `TRENDGAP_ML_TIMEOUT=10m` e `TRENDGAP_ML_PORT=abc`; exige saída ≠ 0, nome da variável e regra na saída, e que o valor informado não apareça; para o backend isso exercita o `ConfigFailureAnalyzer` pelo caminho real (`SpringApplication`), conferindo o bloco "APPLICATION FAILED TO START". Verificação: `scripts/check-failfast.sh`
 
 **Checkpoint**: SC-006 verificável por script.
 
