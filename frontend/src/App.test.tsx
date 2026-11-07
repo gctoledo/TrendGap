@@ -1,8 +1,18 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { render, screen } from '@testing-library/react'
-import { expect, test } from 'vitest'
+import { afterEach, expect, test, vi } from 'vitest'
 import { App } from './App'
 
-test('renders the app title', () => {
-  render(<App />)
-  expect(screen.getByRole('heading', { name: 'TrendGap' })).toBeDefined()
+afterEach(() => {
+  vi.unstubAllGlobals()
+})
+
+test('renders the status page heading', () => {
+  vi.stubGlobal('fetch', vi.fn().mockReturnValue(new Promise(() => undefined)))
+  render(
+    <QueryClientProvider client={new QueryClient()}>
+      <App />
+    </QueryClientProvider>,
+  )
+  expect(screen.getByRole('heading', { name: 'Status do sistema' })).toBeDefined()
 })

@@ -1,3 +1,5 @@
+import { StatusPage } from './status/StatusPage'
+
 export function App() {
-  return <h1>TrendGap</h1>
+  return <StatusPage />
 }
