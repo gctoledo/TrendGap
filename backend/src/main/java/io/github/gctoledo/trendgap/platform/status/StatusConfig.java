@@ -16,15 +16,22 @@ import org.springframework.context.annotation.Configuration;
 public class StatusConfig {
 
   private static final Duration PROBE_MARGIN = Duration.ofMillis(500);
+  private static final Duration DB_TIMEOUT = Duration.ofSeconds(2);
 
   @Bean
   DatabaseProbe databaseProbe(DataSource dataSource) {
-    return new DatabaseProbe(dataSource, Duration.ofSeconds(2));
+    return new DatabaseProbe(dataSource, DB_TIMEOUT);
   }
 
   @Bean
   StatusService statusService(List<ComponentProbe> probes, TrendGapProperties properties) {
     return new StatusService(
-        probes, properties.ml().timeout().plus(PROBE_MARGIN), Clock.systemUTC());
+        probes,
+        slowest(properties.ml().timeout(), DB_TIMEOUT).plus(PROBE_MARGIN),
+        Clock.systemUTC());
+  }
+
+  private static Duration slowest(Duration a, Duration b) {
+    return a.compareTo(b) >= 0 ? a : b;
   }
 }

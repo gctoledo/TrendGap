@@ -38,7 +38,8 @@ public class StatusService {
   public SystemStatus check() {
     var results = new ArrayList<ComponentHealth>();
     results.add(new ComponentHealth(ComponentName.BACKEND, HealthStatus.UP, clock.instant()));
-    try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
+    var executor = Executors.newVirtualThreadPerTaskExecutor();
+    try {
       var futures = new EnumMap<ComponentName, Future<ComponentHealth>>(ComponentName.class);
       for (ComponentName name : ComponentName.values()) {
         ComponentProbe probe = probes.get(name);
@@ -54,6 +55,9 @@ public class StatusService {
         Future<ComponentHealth> future = futures.get(name);
         results.add(future == null ? down(name) : await(name, future, deadline));
       }
+    } finally {
+      // Do not wait for probes stuck in blocking I/O: their results were already marked DOWN.
+      executor.shutdownNow();
     }
     return new SystemStatus(List.copyOf(results));
   }

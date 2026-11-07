@@ -27,6 +27,7 @@ public class MlClientConfig {
             .requestFactory(ClientHttpRequestFactoryBuilder.detect().build(settings))
             .build();
     var apiClient = new ApiClient(restClient);
+    // The generated ApiClient ignores the RestClient baseUrl and uses the contract server.
     apiClient.setBasePath(baseUrl);
     return new HealthApi(apiClient);
   }
