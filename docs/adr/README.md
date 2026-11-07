@@ -22,3 +22,4 @@
 | 0018 | [Ferramentas do frontend](0018-ferramentas-frontend.md) | aceito | 2026-11-07 |
 | 0019 | [PostgreSQL 18 com pgvector e papel de aplicação sem superusuário](0019-postgres-18-pgvector-papel-aplicacao.md) | aceito | 2026-11-07 |
 | 0020 | [Pipeline de CI e imagens de contêiner](0020-pipeline-ci-e-imagens-base.md) | aceito | 2026-11-07 |
+| 0021 | [spring-boot-starter-restclient para o cliente do serviço de ML](0021-starter-restclient-cliente-ml.md) | aceito | 2026-11-07 |
