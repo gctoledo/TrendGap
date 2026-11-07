@@ -146,7 +146,7 @@ tarefa que usa o que ele cobre (ver Dependências). Verificação comum: arquivo
 - [x] T054 [US4] Impl: Micrometer Tracing com bridge OTel (amostragem 1.0), logs ECS no console em `application.yaml`, uma linha de log por chamada da `MlServiceProbe` (resultado e duração, sem segredos). Verificação: `cd backend && ./mvnw verify -Dit.test=TracePropagationIT`
 - [x] T055 [P] [US4] Teste: `platform/observability/ComponentStatusMetricTest.java`: gauge `trendgap.component.status` por componente (1 = UP, 0 = DOWN) e contagem/duração de requisições no endpoint Prometheus. Vermelha. Verificação: `cd backend && ./mvnw test -Dtest=ComponentStatusMetricTest` (falha esperada)
 - [x] T056 [US4] Impl: `platform/observability/ComponentStatusMetrics.java` ligado ao `StatusService`; `micrometer-registry-prometheus` em `/actuator/prometheus`. Verificação: `cd backend && ./mvnw test -Dtest=ComponentStatusMetricTest`
-- [ ] T057 [US4] Teste: `OtlpConditionalTest.java` com `ApplicationContextRunner`: sem `OTEL_EXPORTER_OTLP_ENDPOINT` (ausente ou vazio) nenhum exportador OTLP é criado; com URL, é criado. Vermelha. Verificação: `cd backend && ./mvnw test -Dtest=OtlpConditionalTest` (falha esperada)
+- [x] T057 [US4] Teste: `OtlpConditionalTest.java` com `ApplicationContextRunner`: sem `OTEL_EXPORTER_OTLP_ENDPOINT` (ausente ou vazio) nenhum exportador OTLP é criado; com URL, é criado. Vermelha. Verificação: `cd backend && ./mvnw test -Dtest=OtlpConditionalTest` (falha esperada)
 - [ ] T058 [US4] Impl: configuração condicional da exportação OTLP (`@ConditionalOnProperty`/propriedade equivalente) em `platform/observability/`. Verificação: `cd backend && ./mvnw test -Dtest=OtlpConditionalTest`
 
 ### ML
