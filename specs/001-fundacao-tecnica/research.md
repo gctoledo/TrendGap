@@ -175,6 +175,7 @@ GitHub Releases). Dependabot assume as atualizações daqui em diante.
   busybox; Postgres usa `pg_isready`. **A confirmar na tarefa do Dockerfile do backend**: se a imagem
   JRE noble traz `curl`; se não, usar um healthcheck em Java de arquivo único
   (`java HealthCheck.java <url>`), sem pacote extra.
+  - **Resolvido (T037/T041)**: a JRE noble não traz `curl`/`wget` nem `jdk.compiler` (modo arquivo-fonte falha); o `HealthCheck.java` é compilado no estágio de build e executado com `java -cp /app HealthCheck <url>`. O Dockerfile do backend usa a raiz do repositório como contexto (o cliente é gerado de `contracts/`).
 - **Duplicidade conhecida**: a tag do Postgres aparece no `compose.yaml` e no teste Java. O Dependabot
   só atualiza a do Compose; a tarefa de testes de integração lê a imagem de uma propriedade Maven
   (`pgvector.image`) para concentrar a edição num lugar do backend.

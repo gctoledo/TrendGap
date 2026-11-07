@@ -1,0 +1,92 @@
+name: trendgap
+
+services:
+  postgres:
+    image: pgvector/pgvector:0.8.7-pg18-trixie
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-}
+      TRENDGAP_DB_USERNAME: ${TRENDGAP_DB_USERNAME:-}
+      TRENDGAP_DB_PASSWORD: ${TRENDGAP_DB_PASSWORD:-}
+    volumes:
+      - pgdata:/var/lib/postgresql
+      - ./postgres/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U \"$$POSTGRES_USER\" -d postgres"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+      start_period: 10s
+    networks: [internal]
+
+  ml-service:
+    build:
+      context: ../ml-service
+    image: trendgap-ml:local
+    restart: unless-stopped
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - "import urllib.request as u; u.urlopen('http://127.0.0.1:8000/health', timeout=2)"
+      interval: 5s
+      timeout: 3s
+      retries: 6
+      start_period: 5s
+    networks: [internal]
+
+  backend:
+    build:
+      context: ..
+      dockerfile: backend/Dockerfile
+    image: trendgap-backend:local
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      TRENDGAP_DB_URL: jdbc:postgresql://postgres:5432/trendgap
+      TRENDGAP_DB_USERNAME: ${TRENDGAP_DB_USERNAME:-}
+      TRENDGAP_DB_PASSWORD: ${TRENDGAP_DB_PASSWORD:-}
+      TRENDGAP_ML_BASE_URL: http://ml-service:8000
+    healthcheck:
+      test:
+        - CMD
+        - java
+        - -cp
+        - /app
+        - HealthCheck
+        - http://127.0.0.1:8081/actuator/health/readiness
+      interval: 5s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+    networks: [internal]
+
+  frontend:
+    build:
+      context: ../frontend
+    image: trendgap-frontend:local
+    restart: unless-stopped
+    depends_on:
+      backend:
+        condition: service_healthy
+    ports:
+      - "${TRENDGAP_WEB_PORT:-8080}:8080"
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:8080/"]
+      interval: 5s
+      timeout: 3s
+      retries: 6
+      start_period: 5s
+    networks: [internal, edge]
+
+networks:
+  internal:
+    internal: true
+  edge: {}
+
+volumes:
+  pgdata: {}
