@@ -39,7 +39,7 @@ compose() {
   docker compose -p trendgap-smoke --env-file "$ENV_FILE" ${PROFILE_FLAGS[@]+"${PROFILE_FLAGS[@]}"} -f infra/compose.yaml "$@"
 }
 
-PORT="$(env_value TRENDGAP_WEB_PORT)"
+PORT="${TRENDGAP_WEB_PORT:-$(env_value TRENDGAP_WEB_PORT)}" # shell env wins, as in compose
 BASE="http://localhost:${PORT:-8080}"
 
 cleanup() {
