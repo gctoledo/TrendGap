@@ -18,13 +18,13 @@
 Executadas pelo subagente `scribe` com a skill `new-adr`, a partir de plan.md e research.md. Cada ADR antecede a primeira
 tarefa que usa o que ele cobre (ver Dependências). Verificação comum: arquivo existe e contém `- Status: aceito` (formato de docs/adr/template.md).
 
-- [ ] T001 [P] ADR-0015 em `docs/adr/0015-*.md`: observabilidade do ML (OTel SDK, instrumentação FastAPI, OTLP, Prometheus, formatador JSON na stdlib) e appender OTel do Logback no backend, conforme research.md. Verificação: `ls docs/adr/0015-*.md && grep -q '^- Status: aceito' docs/adr/0015-*.md`
-- [ ] T002 [P] ADR-0016 em `docs/adr/0016-*.md`: contrato Java ↔ Python (openapi-generator restclient, schemathesis, mock Prism). Verificação: `ls docs/adr/0016-*.md && grep -q '^- Status: aceito' docs/adr/0016-*.md`
-- [ ] T003 [P] ADR-0017 em `docs/adr/0017-*.md`: qualidade estática do backend (Spotless, Error Prone + NullAway/JSpecify, JaCoCo). Verificação: `ls docs/adr/0017-*.md && grep -q '^- Status: aceito' docs/adr/0017-*.md`
-- [ ] T004 [P] ADR-0018 em `docs/adr/0018-*.md`: ferramentas do frontend (TanStack Query, ESLint flat + typescript-eslint, Prettier, Vitest + Testing Library, TS 6.0). Verificação: `ls docs/adr/0018-*.md && grep -q '^- Status: aceito' docs/adr/0018-*.md`
-- [ ] T005 [P] ADR-0019 em `docs/adr/0019-*.md`: PostgreSQL 18 + pgvector e papel de aplicação sem superusuário. Verificação: `ls docs/adr/0019-*.md && grep -q '^- Status: aceito' docs/adr/0019-*.md`
-- [ ] T006 [P] ADR-0020 em `docs/adr/0020-*.md`: pipeline de CI (paths-filter, `ci-ok`, gitleaks por binário, Trivy, dependency-review, ruleset) e imagens base fixas não-root. Verificação: `ls docs/adr/0020-*.md && grep -q '^- Status: aceito' docs/adr/0020-*.md`
-- [ ] T007 Atualizar `docs/decision-log.md` e `docs/adr/README.md` com ADR-0015 a 0020. Verificação: `for n in 15 16 17 18 19 20; do grep -q "00$n" docs/decision-log.md || echo faltou $n; done`
+- [x] T001 [P] ADR-0015 em `docs/adr/0015-*.md`: observabilidade do ML (OTel SDK, instrumentação FastAPI, OTLP, Prometheus, formatador JSON na stdlib) e appender OTel do Logback no backend, conforme research.md. Verificação: `ls docs/adr/0015-*.md && grep -q '^- Status: aceito' docs/adr/0015-*.md`
+- [x] T002 [P] ADR-0016 em `docs/adr/0016-*.md`: contrato Java ↔ Python (openapi-generator restclient, schemathesis, mock Prism). Verificação: `ls docs/adr/0016-*.md && grep -q '^- Status: aceito' docs/adr/0016-*.md`
+- [x] T003 [P] ADR-0017 em `docs/adr/0017-*.md`: qualidade estática do backend (Spotless, Error Prone + NullAway/JSpecify, JaCoCo). Verificação: `ls docs/adr/0017-*.md && grep -q '^- Status: aceito' docs/adr/0017-*.md`
+- [x] T004 [P] ADR-0018 em `docs/adr/0018-*.md`: ferramentas do frontend (TanStack Query, ESLint flat + typescript-eslint, Prettier, Vitest + Testing Library, TS 6.0). Verificação: `ls docs/adr/0018-*.md && grep -q '^- Status: aceito' docs/adr/0018-*.md`
+- [x] T005 [P] ADR-0019 em `docs/adr/0019-*.md`: PostgreSQL 18 + pgvector e papel de aplicação sem superusuário. Verificação: `ls docs/adr/0019-*.md && grep -q '^- Status: aceito' docs/adr/0019-*.md`
+- [x] T006 [P] ADR-0020 em `docs/adr/0020-*.md`: pipeline de CI (paths-filter, `ci-ok`, gitleaks por binário, Trivy, dependency-review, ruleset) e imagens base fixas não-root. Verificação: `ls docs/adr/0020-*.md && grep -q '^- Status: aceito' docs/adr/0020-*.md`
+- [x] T007 Atualizar `docs/decision-log.md` e `docs/adr/README.md` com ADR-0015 a 0020. Verificação: `for n in 15 16 17 18 19 20; do grep -q "00$n" docs/decision-log.md || echo faltou $n; done`
 
 ---
 

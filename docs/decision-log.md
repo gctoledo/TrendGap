@@ -35,3 +35,9 @@
 - [ADR] P-16/P-17/P-18 Desenvolvimento com agentes: Spec Kit (spec por fatia, sem implement em lote); Claude Code com opusplan; sessão principal planeja e implementa; subagentes test-writer, reviewer, debugger, scribe e Explore (Haiku).
 - P-19 Branch por fatia, PR com squash merge, main protegida.
 - P-21 Licença MIT.
+- [ADR] ADR-0015 Observabilidade do ML (OTel SDK, OTLP HTTP, Prometheus, JSON na stdlib) e appender OTel do Logback no backend.
+- [ADR] ADR-0016 Contrato Java ↔ Python: openapi-generator (restclient), schemathesis e mock Prism.
+- [ADR] ADR-0017 Qualidade estática do backend: Spotless, Error Prone + NullAway/JSpecify, JaCoCo.
+- [ADR] ADR-0018 Ferramentas do frontend: TanStack Query, ESLint flat, Prettier, Vitest; TypeScript 6.0 enquanto o typescript-eslint não suportar o 7.
+- [ADR] ADR-0019 PostgreSQL 18 + pgvector e papel de aplicação sem superusuário.
+- [ADR] ADR-0020 Pipeline de CI (paths-filter, `ci-ok`, gitleaks, Trivy, dependency-review, ruleset) e imagens base fixas não-root.
