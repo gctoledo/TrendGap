@@ -107,6 +107,7 @@ GitHub Releases). Dependabot assume as atualizações daqui em diante.
   a partir do `RestClient.Builder` auto-configurado do Boot (é ele que injeta `traceparent` e tem
   observação/métricas).
 - **Verificação**: `useSpringBoot4`/`useJackson3` existem desde a 7.16; a correção que registra os
+- **Resolvido (T024)**: openapi-generator-maven-plugin 7.27.0 gera o cliente restclient com Jackson 3 e compila no Boot 4.1.2.
   conversores padrão com Jackson 3 no `ApiClient` do restclient entrou em ago/2026 (PR #24640), então
   usar versão ≥ a que contém essa correção.
 - **NullAway/Error Prone**: o código gerado fica fora da análise (`-XepExcludedPaths:.*/generated-sources/.*`
@@ -122,7 +123,8 @@ GitHub Releases). Dependabot assume as atualizações daqui em diante.
   ASGI (`schemathesis.openapi.from_path(...)` + chamada com o app).
   - Alternativa: `openapi-core` validando respostas manualmente (descartada: exige escrever os
     casos à mão; o schemathesis gera a partir do contrato).
-- **Java** — **[ADR]** mock **Prism** (`stoplight/prism:5.16.0`) em `GenericContainer` do
+- **Java** — **[ADR]** mock **Prism** (`stoplight/prism:5.14.3`) em `GenericContainer` do
+  - **Resolvido (T027)**: a tag 5.16.0 não existe no Docker Hub e a 5.15.10 falha em `mock` (`cluster.isPrimary`); usada a 5.14.3. O `ApiClient` gerado ignora o `baseUrl` do `RestClient`: é preciso `setBasePath` (feito em `MlClientConfig`).
   Testcontainers, servindo o mesmo arquivo. O cliente gerado chama o stub; o Prism valida a
   requisição contra o contrato e responde com os exemplos do contrato. Sem dependência Java nova.
   - Alternativa: WireMock + `swagger-request-validator-wiremock` (descartada: dependência Java a
@@ -167,7 +169,7 @@ GitHub Releases). Dependabot assume as atualizações daqui em diante.
 | Runtime frontend | `nginxinc/nginx-unprivileged:1.30.6-alpine3.24` (linha estável) |
 | Banco | `pgvector/pgvector:0.8.7-pg18-trixie` |
 | Observabilidade (profile) | `grafana/otel-lgtm:0.39.0` |
-| Mock de contrato (testes) | `stoplight/prism:5.16.0` |
+| Mock de contrato (testes) | `stoplight/prism:5.14.3` |
 
 - **Healthchecks sem instalar ferramentas**: ML usa `python -c` com `urllib`; nginx usa `wget` do
   busybox; Postgres usa `pg_isready`. **A confirmar na tarefa do Dockerfile do backend**: se a imagem

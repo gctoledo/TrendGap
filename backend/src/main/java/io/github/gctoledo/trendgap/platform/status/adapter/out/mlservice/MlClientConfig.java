@@ -26,7 +26,9 @@ public class MlClientConfig {
             .baseUrl(baseUrl)
             .requestFactory(ClientHttpRequestFactoryBuilder.detect().build(settings))
             .build();
-    return new HealthApi(new ApiClient(restClient));
+    var apiClient = new ApiClient(restClient);
+    apiClient.setBasePath(baseUrl);
+    return new HealthApi(apiClient);
   }
 
   @Bean

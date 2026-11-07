@@ -7,7 +7,7 @@
 O backend Java e o serviço Python de ML se falam por HTTP (ADR-0005). O arquivo `contracts/ml-service.openapi.yaml` é a fonte da verdade dessa fronteira. Precisamos de um cliente Java sem escrita manual, de testes que validem os dois lados contra o mesmo arquivo e de compatibilidade com Spring Boot 4.1 e Jackson 3 (research.md, R-09 e R-10).
 
 ## Opções consideradas
-1. Cliente Java gerado com openapi-generator 7.27.x (`java`, `library=restclient`, `useSpringBoot4`, `useJackson3`); schemathesis 4.x no Python; mock Prism 5.16.0 via Testcontainers no Java.
+1. Cliente Java gerado com openapi-generator 7.27.x (`java`, `library=restclient`, `useSpringBoot4`, `useJackson3`); schemathesis 4.x no Python; mock Prism 5.14.3 via Testcontainers no Java.
 2. WireMock com `swagger-request-validator-wiremock` no Java: stubs escritos à mão e uma dependência Java a mais.
 3. `openapi-core` no Python validando respostas manualmente: exige escrever os casos à mão.
 
