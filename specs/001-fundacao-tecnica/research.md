@@ -43,6 +43,7 @@ GitHub Releases). Dependabot assume as atualizações daqui em diante.
     não monta volume de dados, então não é afetado.
   - Compose: o volume nomeado DEVE ser montado em `/var/lib/postgresql` (e não em
     `/var/lib/postgresql/data`), por causa do novo layout.
+- **Resolvido (T017)**: `FlywayMigrationIT` passa com `pgvector/pgvector:0.8.7-pg18-trixie` (PG 18, Testcontainers 2.0.5, migração idempotente); fallback pg17 não necessário.
 - **Fallback**: se o primeiro teste de integração (tarefa de Flyway + Testcontainers) falhar por
   causa do PG 18, trocar para `pgvector/pgvector:0.8.7-pg17-trixie` nos dois lugares e registrar
   no ADR do banco.
