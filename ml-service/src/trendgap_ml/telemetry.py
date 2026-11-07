@@ -87,5 +87,5 @@ def setup_telemetry(app: FastAPI, endpoint: str | None) -> None:
         app,
         tracer_provider=_providers.tracer,
         meter_provider=_providers.meter,
-        excluded_urls="metrics",
+        excluded_urls="/metrics$",
     )

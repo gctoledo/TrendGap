@@ -45,7 +45,7 @@ check() {
 
 check backend TRENDGAP_ML_BASE_URL "" "absolute http or https URL" "APPLICATION FAILED TO START"
 check backend TRENDGAP_ML_TIMEOUT "10m" "between 100ms and 5s" "APPLICATION FAILED TO START"
-check ml-service TRENDGAP_ML_PORT "abc" "integer"
+check ml-service TRENDGAP_ML_PORT "abc-not-an-int" "integer"
 
 if ((failures > 0)); then
   echo "FAILFAST FAILED ($failures)" >&2

@@ -36,7 +36,7 @@ PROFILE_FLAGS=()
 if [[ "${SMOKE_OBSERVABILITY:-}" == "1" ]]; then PROFILE_FLAGS=(--profile observability); fi
 
 compose() {
-  docker compose -p trendgap-smoke --env-file "$ENV_FILE" "${PROFILE_FLAGS[@]}" -f infra/compose.yaml "$@"
+  docker compose -p trendgap-smoke --env-file "$ENV_FILE" ${PROFILE_FLAGS[@]+"${PROFILE_FLAGS[@]}"} -f infra/compose.yaml "$@"
 }
 
 PORT="$(env_value TRENDGAP_WEB_PORT)"

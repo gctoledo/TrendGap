@@ -93,7 +93,7 @@ services:
     volumes:
       - ./observability/prometheus.yaml:/otel-lgtm/prometheus.yaml:ro
     ports:
-      - "3000:3000"
+      - "127.0.0.1:3000:3000"
     expose:
       - "4318"
     networks: [internal, edge]
