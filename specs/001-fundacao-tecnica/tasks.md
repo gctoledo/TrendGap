@@ -91,10 +91,10 @@ tarefa que usa o que ele cobre (ver Dependências). Verificação comum: arquivo
 
 ### Contêineres, Compose e smoke
 
-- [ ] T037 [P] [US1] `backend/Dockerfile` multi-stage, `USER` numérico não-root, tag fixa, `RUN --mount=type=cache` para Maven. Verificação: `docker build -t trendgap-backend:test backend`
-- [ ] T038 [P] [US1] `ml-service/Dockerfile` multi-stage com uv, não-root, tag fixa. Verificação: `docker build -t trendgap-ml:test ml-service`
-- [ ] T039 [P] [US1] `frontend/Dockerfile` + `frontend/nginx/default.conf.template` (nginx-unprivileged na 8080, `try_files` para a SPA, `location /api/ { proxy_pass http://backend:8080; }`). Verificação: `docker build -t trendgap-frontend:test frontend`
-- [ ] T040 [P] [US1] `infra/postgres/init/01-app-role.sh`: papel de aplicação sem superusuário e extensão `vector`. Verificação: `bash -n infra/postgres/init/01-app-role.sh && shellcheck infra/postgres/init/01-app-role.sh`
+- [x] T037 [P] [US1] `backend/Dockerfile` multi-stage, `USER` numérico não-root, tag fixa, `RUN --mount=type=cache` para Maven. Verificação: `docker build -f backend/Dockerfile -t trendgap-backend:test .` (contexto = raiz, pois o cliente é gerado de `contracts/`)
+- [x] T038 [P] [US1] `ml-service/Dockerfile` multi-stage com uv, não-root, tag fixa. Verificação: `docker build -t trendgap-ml:test ml-service`
+- [x] T039 [P] [US1] `frontend/Dockerfile` + `frontend/nginx/default.conf.template` (nginx-unprivileged na 8080, `try_files` para a SPA, `location /api/ { proxy_pass http://backend:8080; }`). Verificação: `docker build -t trendgap-frontend:test frontend`
+- [x] T040 [P] [US1] `infra/postgres/init/01-app-role.sh`: papel de aplicação sem superusuário e extensão `vector`. Verificação: `bash -n infra/postgres/init/01-app-role.sh && shellcheck infra/postgres/init/01-app-role.sh`
 - [ ] T041 [US1] `infra/compose.yaml` e `.env.example` (variáveis de infra de data-model §4): rede interna, só `frontend` publica `${TRENDGAP_WEB_PORT:-8080}:8080`, healthchecks (`pg_isready`, readiness 8081, `/health`, `wget /`), `depends_on` com `service_healthy` (backend não depende do ML), `restart: unless-stopped`. Verificação: `cp .env.example .env && docker compose -f infra/compose.yaml config -q`
 - [ ] T042 [US1] `scripts/smoke.sh` (parte de status): sobe com `--wait`; `GET /api/status` com os três `UP`; para o ML e exige `DOWN` em ≤ 15 s; religa e exige `UP` em ≤ 15 s; para o postgres e exige `database=DOWN` em ≤ 15 s; sobe de novo e exige `UP` em ≤ 15 s; derruba no fim (`--keep` mantém); falha se a senha do banco (`POSTGRES_PASSWORD`/`TRENDGAP_DB_PASSWORD` do `.env`) ou uma URL com credenciais (`://usuario:senha@`) aparecer em `docker compose logs` do backend ou do ML. Verificação: `scripts/smoke.sh`
 
