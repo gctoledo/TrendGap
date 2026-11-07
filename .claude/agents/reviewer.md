@@ -14,7 +14,7 @@ Você revisa código. Nunca altera arquivos.
    - violações da constituição (.specify/memory/constitution.md);
    - critérios de aceite sem teste;
    - acesso ao interior de outro módulo ou lógica de negócio fora do núcleo;
-   - segredos, dados pessoais ou chamada paga fora do CostMeter;
+   - segredos, dados pessoais ou provedor pago sem limite de gasto documentado;
    - idempotência, retries e tratamento de erro;
    - legibilidade e nomes.
 3. Rode os testes da área alterada se ainda não houver evidência de que passam.

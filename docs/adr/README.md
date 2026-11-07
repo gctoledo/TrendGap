@@ -15,3 +15,12 @@
 | 0011 | [SDK oficial Anthropic para Java atrás de LlmPort](0011-sdk-anthropic-java-atras-de-llmport.md) | aceito | 2026-11-02 |
 | 0012 | [Observabilidade com logs JSON, Micrometer e OpenTelemetry](0012-observabilidade-otel-micrometer.md) | aceito | 2026-11-02 |
 | 0013 | [Desenvolvimento com agentes (Spec Kit e Claude Code)](0013-desenvolvimento-com-agentes.md) | aceito | 2026-11-02 |
+| 0014 | [Adiar o controle de custo dentro da aplicação](0014-adiar-controle-de-custo-na-aplicacao.md) | aceito | 2026-11-03 |
+| 0015 | [Observabilidade do serviço de ML e exportação de logs do backend](0015-observabilidade-ml-e-logback-otel.md) | aceito | 2026-11-07 |
+| 0016 | [Contrato Java ↔ Python: geração de cliente e testes de contrato](0016-contrato-java-python-openapi.md) | aceito | 2026-11-07 |
+| 0017 | [Qualidade estática do backend](0017-qualidade-estatica-backend.md) | aceito | 2026-11-07 |
+| 0018 | [Ferramentas do frontend](0018-ferramentas-frontend.md) | aceito | 2026-11-07 |
+| 0019 | [PostgreSQL 18 com pgvector e papel de aplicação sem superusuário](0019-postgres-18-pgvector-papel-aplicacao.md) | aceito | 2026-11-07 |
+| 0020 | [Pipeline de CI e imagens de contêiner](0020-pipeline-ci-e-imagens-base.md) | aceito | 2026-11-07 |
+| 0021 | [spring-boot-starter-restclient para o cliente do serviço de ML](0021-starter-restclient-cliente-ml.md) | aceito | 2026-11-07 |
+| 0022 | [spring-boot-starter-webmvc-test para testes de controller](0022-starter-webmvc-test.md) | aceito | 2026-11-07 |

@@ -1,0 +1,51 @@
+spring:
+  application:
+    name: trendgap
+  threads:
+    virtual:
+      enabled: true
+  datasource:
+    url: ${trendgap.db.url:}
+    username: ${trendgap.db.username:}
+    password: ${trendgap.db.password:}
+    hikari:
+      connection-timeout: 2000
+
+logging:
+  structured:
+    format:
+      console: ecs
+    ecs:
+      service:
+        name: backend
+    json:
+      # Boot's ECS writer emits traceId/spanId; the project contract uses ECS names (data-model §5).
+      rename:
+        traceId: trace.id
+        spanId: span.id
+
+server:
+  port: ${trendgap.http.port:8080}
+
+management:
+  opentelemetry:
+    resource-attributes:
+      service.name: backend
+  tracing:
+    sampling:
+      probability: 1.0
+  server:
+    port: ${trendgap.management.port:8081}
+  endpoints:
+    web:
+      exposure:
+        include: health,prometheus
+  endpoint:
+    health:
+      show-details: never
+      show-components: never
+      probes:
+        enabled: true
+      group:
+        readiness:
+          include: readinessState,db

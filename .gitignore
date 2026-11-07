@@ -40,3 +40,5 @@ Thumbs.db
 # Logs e dados locais
 *.log
 infra/data/
+
+*.tsbuildinfo

@@ -1,0 +1,288 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  GITLEAKS_VERSION: 8.30.1
+
+jobs:
+  changes:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      backend: ${{ steps.filter.outputs.backend }}
+      ml: ${{ steps.filter.outputs.ml }}
+      frontend: ${{ steps.filter.outputs.frontend }}
+      smoke: ${{ steps.filter.outputs.smoke }}
+    steps:
+      - name: Record start
+        run: echo "JOB_START=$(date +%s)" >> "$GITHUB_ENV"
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: dorny/paths-filter@ceb8a2b8f2d89434be7ff52d3de7ec3738c5cc9d # v4.0.3
+        id: filter
+        with:
+          filters: |
+            backend:
+              - 'backend/**'
+              - 'contracts/**'
+              - '.github/workflows/**'
+            ml:
+              - 'ml-service/**'
+              - 'contracts/**'
+              - '.github/workflows/**'
+            frontend:
+              - 'frontend/**'
+              - 'contracts/**'
+              - '.github/workflows/**'
+            smoke:
+              - 'backend/**'
+              - 'ml-service/**'
+              - 'frontend/**'
+              - 'contracts/**'
+              - 'infra/**'
+              - 'scripts/**'
+      - name: Job duration
+        if: always()
+        run: echo "changes took $(( $(date +%s) - JOB_START ))s" >> "$GITHUB_STEP_SUMMARY"
+
+  backend:
+    needs: changes
+    if: needs.changes.outputs.backend == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Record start
+        run: echo "JOB_START=$(date +%s)" >> "$GITHUB_ENV"
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-java@77dd5b2ce225ea11469928ac317850245a74ae78 # v6.2.0
+        with:
+          distribution: temurin
+          java-version: "25"
+          cache: maven
+      - name: Spotless check and verify
+        working-directory: backend
+        run: ./mvnw -B spotless:check verify
+      - name: Job duration
+        if: always()
+        run: echo "backend took $(( $(date +%s) - JOB_START ))s" >> "$GITHUB_STEP_SUMMARY"
+
+  ml-service:
+    needs: changes
+    if: needs.changes.outputs.ml == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: ml-service
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Record start
+        run: echo "JOB_START=$(date +%s)" >> "$GITHUB_ENV"
+      - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+        with:
+          enable-cache: true
+          cache-dependency-glob: ml-service/uv.lock
+      - run: uv sync --frozen
+      - run: uv run ruff check .
+      - run: uv run ruff format --check .
+      - run: uv run mypy src
+      - run: uv run pytest
+      - name: Job duration
+        if: always()
+        run: echo "ml-service took $(( $(date +%s) - JOB_START ))s" >> "$GITHUB_STEP_SUMMARY"
+
+  frontend:
+    needs: changes
+    if: needs.changes.outputs.frontend == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Record start
+        run: echo "JOB_START=$(date +%s)" >> "$GITHUB_ENV"
+      - uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
+        with:
+          package_json_file: frontend/package.json
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: "24"
+          cache: pnpm
+          cache-dependency-path: frontend/pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm lint
+      - run: pnpm format:check
+      - run: pnpm typecheck
+      - run: pnpm test
+      - run: pnpm build
+      - name: Job duration
+        if: always()
+        run: echo "frontend took $(( $(date +%s) - JOB_START ))s" >> "$GITHUB_STEP_SUMMARY"
+
+  gitleaks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Record start
+        run: echo "JOB_START=$(date +%s)" >> "$GITHUB_ENV"
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Install gitleaks
+        run: |
+          base="https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}"
+          file="gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz"
+          curl -sSfL -o "$RUNNER_TEMP/$file" "$base/$file"
+          curl -sSfL -o "$RUNNER_TEMP/checksums.txt" "$base/gitleaks_${GITLEAKS_VERSION}_checksums.txt"
+          (cd "$RUNNER_TEMP" && grep " $file\$" checksums.txt | sha256sum -c -)
+          tar -xzf "$RUNNER_TEMP/$file" -C "$RUNNER_TEMP" gitleaks
+          sudo install "$RUNNER_TEMP/gitleaks" /usr/local/bin/gitleaks
+      - name: Scan history
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          if [ "$EVENT_NAME" = "pull_request" ]; then
+            gitleaks git --redact --verbose --no-banner --log-opts="${BASE_SHA}..${HEAD_SHA}" .
+          else
+            gitleaks git --redact --verbose --no-banner .
+          fi
+      - name: Self-test
+        run: scripts/test-gitleaks.sh
+      - name: Job duration
+        if: always()
+        run: echo "gitleaks took $(( $(date +%s) - JOB_START ))s" >> "$GITHUB_STEP_SUMMARY"
+
+  dependency-review:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - name: Record start
+        run: echo "JOB_START=$(date +%s)" >> "$GITHUB_ENV"
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/dependency-review-action@a1d282b36b6f3519aa1f3fc636f609c47dddb294 # v5.0.0
+        with:
+          fail-on-severity: high
+      - name: Job duration
+        if: always()
+        run: echo "dependency-review took $(( $(date +%s) - JOB_START ))s" >> "$GITHUB_STEP_SUMMARY"
+
+  smoke:
+    needs: changes
+    if: needs.changes.outputs.smoke == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Record start
+        run: echo "JOB_START=$(date +%s)" >> "$GITHUB_ENV"
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
+      - name: Build images (bake, gha cache)
+        uses: docker/bake-action@59cb1203cd42bcefd40a1b6d73b589e48c86040e # v7.5.0
+        with:
+          files: infra/compose.yaml
+          load: true
+          set: |
+            *.cache-from=type=gha
+            *.cache-to=type=gha,mode=max
+      - name: Trivy backend (fail)
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        with:
+          image-ref: trendgap-backend:local
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
+          exit-code: "1"
+      - name: Trivy ml-service (fail)
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        with:
+          image-ref: trendgap-ml:local
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
+          exit-code: "1"
+      - name: Trivy frontend (fail)
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        with:
+          image-ref: trendgap-frontend:local
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
+          exit-code: "1"
+      - name: Trivy report backend (warn on MEDIUM/LOW)
+        if: always()
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        with:
+          image-ref: trendgap-backend:local
+          severity: MEDIUM,LOW
+          exit-code: "0"
+      - name: Trivy report ml-service (warn on MEDIUM/LOW)
+        if: always()
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        with:
+          image-ref: trendgap-ml:local
+          severity: MEDIUM,LOW
+          exit-code: "0"
+      - name: Trivy report frontend (warn on MEDIUM/LOW)
+        if: always()
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        with:
+          image-ref: trendgap-frontend:local
+          severity: MEDIUM,LOW
+          exit-code: "0"
+      - name: Smoke test
+        env:
+          SMOKE_NO_BUILD: "1"
+        run: scripts/smoke.sh
+      - name: Job duration
+        if: always()
+        run: echo "smoke took $(( $(date +%s) - JOB_START ))s" >> "$GITHUB_STEP_SUMMARY"
+
+  ci-ok:
+    if: always()
+    needs: [changes, backend, ml-service, frontend, gitleaks, dependency-review, smoke]
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Record start
+        run: echo "JOB_START=$(date +%s)" >> "$GITHUB_ENV"
+      - name: Check results
+        env:
+          RESULTS: ${{ join(needs.*.result, ' ') }}
+        run: |
+          echo "needs results: $RESULTS"
+          for r in $RESULTS; do
+            if [ "$r" = "failure" ] || [ "$r" = "cancelled" ]; then
+              echo "A required job did not succeed: $r" >&2
+              exit 1
+            fi
+          done
+      - name: Job duration
+        if: always()
+        run: echo "ci-ok took $(( $(date +%s) - JOB_START ))s" >> "$GITHUB_STEP_SUMMARY"

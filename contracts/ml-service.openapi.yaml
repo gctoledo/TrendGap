@@ -1,0 +1,34 @@
+# Rascunho de desenho. Na tarefa do contrato, este arquivo vai para contracts/ml-service.openapi.yaml
+# (fonte da verdade) e aqui fica só o README apontando para lá.
+openapi: 3.0.3
+info:
+  title: TrendGap ML service
+  version: 0.1.0
+  description: Stateless ML service. The Java backend is the only client.
+servers:
+  - url: http://ml-service:8000
+paths:
+  /health:
+    get:
+      operationId: getHealth
+      summary: Liveness and readiness (the service has no dependencies in this slice)
+      tags: [health]
+      responses:
+        "200":
+          description: Service is up
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Health"
+              example:
+                status: UP
+components:
+  schemas:
+    Health:
+      type: object
+      additionalProperties: false
+      required: [status]
+      properties:
+        status:
+          type: string
+          enum: [UP]
