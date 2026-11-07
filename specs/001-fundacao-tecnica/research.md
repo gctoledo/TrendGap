@@ -27,7 +27,7 @@ GitHub Releases). Dependabot assume as atualizações daqui em diante.
 
 - **Decisão**: `spring-modulith-bom` **2.1.2** (o Boot não gerencia o Modulith).
 - **Justificativa**: a linha 2.1 acompanha o Boot 4.1; a 2.2 está em RC.
-- **A confirmar na primeira tarefa do backend**: o teste `ApplicationModules.verify()` sobe com
+- **Resolvido (T012)**: `ApplicationModules.verify()` sobe com Boot 4.1.2 + Modulith 2.1.2 sem conflito. (Era: a confirmar na primeira tarefa do backend): o teste `ApplicationModules.verify()` sobe com
   Boot 4.1.2 sem conflito de versão de Spring Framework. Se falhar, ficar na 2.1.x mais recente
   compatível segundo a matriz do projeto.
 

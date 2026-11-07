@@ -18,6 +18,7 @@
 
   <properties>
     <java.version>25</java.version>
+    <modulith.version>2.1.2</modulith.version>
     <jspecify.version>1.0.1</jspecify.version>
     <errorprone.version>2.52.0</errorprone.version>
     <nullaway.version>0.14.3</nullaway.version>
@@ -26,6 +27,18 @@
     <!-- Limite de cobertura desligado até T016, primeira tarefa com lógica (ADR-0017). -->
     <jacoco.check.skip>true</jacoco.check.skip>
   </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.springframework.modulith</groupId>
+        <artifactId>spring-modulith-bom</artifactId>
+        <version>${modulith.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
   <dependencies>
     <dependency>
@@ -63,6 +76,16 @@
       <scope>runtime</scope>
     </dependency>
 
+    <dependency>
+      <groupId>org.springframework.modulith</groupId>
+      <artifactId>spring-modulith-starter-core</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.modulith</groupId>
+      <artifactId>spring-modulith-starter-test</artifactId>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-test</artifactId>
