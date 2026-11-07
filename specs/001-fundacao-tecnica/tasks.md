@@ -81,13 +81,13 @@ tarefa que usa o que ele cobre (ver Dependências). Verificação comum: arquivo
 
 - [x] T031 [P] [US1] Teste: `ml-service/tests/test_health.py` (`TestClient`): `GET /health` → 200 com corpo exato `{"status":"UP"}`. Vermelha. Verificação: `cd ml-service && uv run pytest tests/test_health.py` (falha esperada)
 - [x] T032 [US1] Impl: `ml-service/src/trendgap_ml/api/health.py` e `app.py` (`create_app()`), `__main__.py` chama uvicorn com `access_log=False`. Verificação: `cd ml-service && uv run ruff check . && uv run mypy src && uv run pytest`
-- [ ] T033 [US1] Teste de contrato: `ml-service/tests/test_contract.py` (schemathesis contra `contracts/ml-service.openapi.yaml` + rotas do app ⇔ contrato). Verificação: `cd ml-service && uv run pytest tests/test_contract.py`
+- [x] T033 [US1] Teste de contrato: `ml-service/tests/test_contract.py` (schemathesis contra `contracts/ml-service.openapi.yaml` + rotas do app ⇔ contrato). Verificação: `cd ml-service && uv run pytest tests/test_contract.py`
 
 ### Frontend: página de status
 
-- [ ] T034 [P] [US1] Teste: `frontend/src/api/status.test.ts` e `frontend/src/status/StatusPage.test.tsx`: renderiza os três componentes com estado e horário e os rótulos "Saudável" (`UP`), "Fora do ar" (`DOWN`) e "Desconhecido" (`UNKNOWN`); falha de rede/5xx/4 s → backend `DOWN`, banco e ML `UNKNOWN`, horário da tentativa; troca de estado entre consultas com timers falsos (`refetchInterval` 5000). Vermelha. Verificação: `cd frontend && pnpm test` (falha esperada)
-- [ ] T035 [US1] Impl: `frontend/src/api/status.ts` (tipos do contrato, `AbortSignal.timeout(4000)`, mapeamento de erro) e `frontend/src/status/useSystemStatus.ts` (TanStack Query: `refetchInterval: 5000`, `refetchIntervalInBackground: true`, `retry: false`). Verificação: `cd frontend && pnpm test -- status.test`
-- [ ] T036 [US1] Impl: `frontend/src/status/StatusPage.tsx` (rótulos da interface: `UP` → "Saudável", `DOWN` → "Fora do ar", `UNKNOWN` → "Desconhecido"), `App.tsx`, `main.tsx` (QueryClientProvider), proxy `/api → http://localhost:8080` no Vite. Verificação: `cd frontend && pnpm lint && pnpm typecheck && pnpm test`
+- [x] T034 [P] [US1] Teste: `frontend/src/api/status.test.ts` e `frontend/src/status/StatusPage.test.tsx`: renderiza os três componentes com estado e horário e os rótulos "Saudável" (`UP`), "Fora do ar" (`DOWN`) e "Desconhecido" (`UNKNOWN`); falha de rede/5xx/4 s → backend `DOWN`, banco e ML `UNKNOWN`, horário da tentativa; troca de estado entre consultas com timers falsos (`refetchInterval` 5000). Vermelha. Verificação: `cd frontend && pnpm test` (falha esperada)
+- [x] T035 [US1] Impl: `frontend/src/api/status.ts` (tipos do contrato, `AbortSignal.timeout(4000)`, mapeamento de erro) e `frontend/src/status/useSystemStatus.ts` (TanStack Query: `refetchInterval: 5000`, `refetchIntervalInBackground: true`, `retry: false`). Verificação: `cd frontend && pnpm test -- status.test`
+- [x] T036 [US1] Impl: `frontend/src/status/StatusPage.tsx` (rótulos da interface: `UP` → "Saudável", `DOWN` → "Fora do ar", `UNKNOWN` → "Desconhecido"), `App.tsx`, `main.tsx` (QueryClientProvider), proxy `/api → http://localhost:8080` no Vite. Verificação: `cd frontend && pnpm lint && pnpm typecheck && pnpm test`
 
 ### Contêineres, Compose e smoke
 
