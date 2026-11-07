@@ -86,6 +86,7 @@ GitHub Releases). Dependabot assume as atualizações daqui em diante.
   variável está ausente. Se um valor vazio (`${OTEL_EXPORTER_OTLP_ENDPOINT:}`) ativar o exportador,
   usar `@ConditionalOnProperty`/perfil ou `management.*.export.enabled=${...}` derivado.
 - **Resolvido (T058)**: o exportador OTLP existia por padrão (`management.*.export.otlp.enabled=true`); `OtlpExportSwitch` (EnvironmentPostProcessor) desliga os de traces, logs e métricas quando `OTEL_EXPORTER_OTLP_ENDPOINT` está ausente/vazia.
+- **Resolvido (T064)**: o Boot 4.1 mapeia `OTEL_EXPORTER_OTLP_ENDPOINT` para os exportadores; verificado de ponta a ponta com o profile (Tempo recebe spans de `backend` e `ml-service`). Nome do serviço em OTel: `management.opentelemetry.resource-attributes.service.name`. O cliente JDK do backend usa HTTP/1.1 (a tentativa de upgrade h2c fazia o uvicorn perder o contexto do trace em conexões reaproveitadas).
 - **Exportação de logs para a pilha local**: appender `opentelemetry-logback-appender-1.0` do BOM de
   instrumentação OTel (2.33.x) instalado pelo starter. **[ADR]** junto da observabilidade (ver ADRs).
 - **Amostragem**: `management.tracing.sampling.probability=1.0` fixo nesta fatia (volume local baixo;

@@ -1,8 +1,12 @@
 #!/usr/bin/env bash
-# Smoke test (status part): brings the stack up, checks GET /api/status and the
-# reaction to stopping/starting the ML service and the database, and verifies that
-# no secret leaks into the backend/ML logs.
+# Smoke test: brings the stack up, checks GET /api/status and the reaction to
+# stopping/starting the ML service and the database, verifies trace propagation
+# (same trace.id in backend and ML logs), that metrics endpoints are not reachable
+# from the host, and that no secret leaks into the backend/ML logs.
 # Usage: scripts/smoke.sh [--keep]   (--keep leaves the stack running at the end)
+# SMOKE_ENV_FILE=path uses another env file (default .env; a temporary one is generated if missing).
+# SMOKE_OBSERVABILITY=1 also starts the "observability" profile (OTLP to the lgtm
+# service) and checks the trace in Tempo through Grafana (port 3000).
 set -euo pipefail
 
 cd "$(dirname "$0")/.."
@@ -11,7 +15,7 @@ KEEP=false
 [[ "${1:-}" == "--keep" ]] && KEEP=true
 
 DEADLINE=15
-ENV_FILE=".env"
+ENV_FILE="${SMOKE_ENV_FILE:-.env}"
 GENERATED_ENV=""
 if [[ ! -f "$ENV_FILE" ]]; then
   GENERATED_ENV="$(mktemp)"
@@ -22,12 +26,18 @@ if [[ ! -f "$ENV_FILE" ]]; then
     echo "TRENDGAP_DB_USERNAME=trendgap"
     echo "TRENDGAP_DB_PASSWORD=$(openssl rand -hex 16)"
     echo "TRENDGAP_WEB_PORT=${TRENDGAP_WEB_PORT:-8080}"
+    [[ "${SMOKE_OBSERVABILITY:-}" == "1" ]] && echo "OTEL_EXPORTER_OTLP_ENDPOINT=http://lgtm:4318"
   } >"$ENV_FILE"
 fi
 
 env_value() { grep -E "^$1=" "$ENV_FILE" | head -1 | cut -d= -f2-; }
 
-compose() { docker compose -p trendgap-smoke --env-file "$ENV_FILE" -f infra/compose.yaml "$@"; }
+PROFILE_FLAGS=()
+if [[ "${SMOKE_OBSERVABILITY:-}" == "1" ]]; then PROFILE_FLAGS=(--profile observability); fi
+
+compose() {
+  docker compose -p trendgap-smoke --env-file "$ENV_FILE" "${PROFILE_FLAGS[@]}" -f infra/compose.yaml "$@"
+}
 
 PORT="$(env_value TRENDGAP_WEB_PORT)"
 BASE="http://localhost:${PORT:-8080}"
@@ -64,6 +74,60 @@ compose up "$BUILD_FLAG" --wait --wait-timeout 240 -d >/dev/null
 
 echo "== all components UP =="
 for c in backend database ml-service; do expect_status "$c" UP; done
+
+echo "== trace propagation =="
+TRACE_ID="$(openssl rand -hex 16)"
+SPAN_ID="$(openssl rand -hex 8)"
+curl -fsS --max-time 5 -H "traceparent: 00-${TRACE_ID}-${SPAN_ID}-01" "$BASE/api/status" >/dev/null ||
+  fail "GET /api/status with traceparent failed"
+backend_hit=0
+ml_hit=0
+end=$((SECONDS + DEADLINE))
+while ((SECONDS < end)); do
+  backend_hit="$(compose logs --no-color backend 2>&1 | grep -c -F "$TRACE_ID" || true)"
+  ml_hit="$(compose logs --no-color ml-service 2>&1 | grep -c -F "$TRACE_ID" || true)"
+  ((backend_hit > 0 && ml_hit > 0)) && break
+  sleep 1
+done
+((backend_hit > 0)) || fail "trace.id $TRACE_ID not found in backend logs"
+((ml_hit > 0)) || fail "trace.id $TRACE_ID not found in ML logs"
+echo "ok: trace.id $TRACE_ID in backend and ML logs"
+
+echo "== internal endpoints unreachable from host =="
+for port in 8081 8000; do
+  if curl -s --max-time 2 -o /dev/null "http://localhost:$port/"; then
+    fail "port $port answers on the host"
+  fi
+done
+for path in /actuator/health /actuator/prometheus /metrics; do
+  body="$(curl -s --max-time 4 "$BASE$path" || true)"
+  if grep -q -E '^# HELP|"status" *: *"(UP|DOWN)"' <<<"$body"; then
+    fail "$path exposed through the frontend"
+  fi
+done
+echo "ok: health/metrics endpoints are internal only"
+
+if [[ "${SMOKE_OBSERVABILITY:-}" == "1" ]]; then
+  echo "== trace in Tempo (Grafana) =="
+  grep -q '^OTEL_EXPORTER_OTLP_ENDPOINT=.\+' "$ENV_FILE" ||
+    fail "SMOKE_OBSERVABILITY=1 requires OTEL_EXPORTER_OTLP_ENDPOINT in $ENV_FILE"
+  GRAFANA_AUTH="admin:admin" # gitleaks:allow (default credentials of the local Grafana)
+  end=$((SECONDS + 60))
+  services=""
+  while ((SECONDS < end)); do
+    services="$(curl -s --max-time 5 -u "$GRAFANA_AUTH" \
+      "http://localhost:3000/api/datasources/proxy/uid/tempo/api/traces/${TRACE_ID}" |
+      jq -r '[.batches[]?.resource.attributes[]? | select(.key == "service.name") | .value.stringValue] | unique | join(",")' \
+        2>/dev/null || true)"
+    [[ "$services" == *backend* && "$services" == *ml-service* ]] && break
+    sleep 3
+  done
+  [[ "$services" == *backend* && "$services" == *ml-service* ]] ||
+    fail "Tempo has no spans from both services for trace $TRACE_ID (got: ${services:-none})"
+  echo "ok: Tempo has spans from $services"
+else
+  echo "skip: Tempo check (set SMOKE_OBSERVABILITY=1 with the observability profile to enable)"
+fi
 
 echo "== ML service down/up =="
 compose stop ml-service >/dev/null
