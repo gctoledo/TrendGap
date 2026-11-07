@@ -14,8 +14,8 @@ Guia para provar, de ponta a ponta, que a fatia funciona. Detalhes de formato es
 
 ```sh
 cp .env.example .env        # preencher as variáveis obrigatórias com valores locais
-docker compose -f infra/compose.yaml build
-docker compose -f infra/compose.yaml up -d --wait --wait-timeout 180
+docker compose --env-file .env -f infra/compose.yaml up -d --build
+docker compose --env-file .env -f infra/compose.yaml up -d --wait --wait-timeout 180
 ```
 
 Esperado: os quatro serviços `healthy` em até 3 minutos. Abrir `http://localhost:8080`
@@ -23,14 +23,14 @@ Esperado: os quatro serviços `healthy` em até 3 minutos. Abrir `http://localho
 
 ## 2. Queda e volta de componentes (SC-002)
 
-| Ação | Esperado na página em até 15 s |
-| --- | --- |
-| `docker compose -f infra/compose.yaml stop ml-service` | ML **fora do ar**; backend e banco saudáveis |
-| `... start ml-service` | ML **saudável** |
-| `... stop postgres` | banco **fora do ar** |
-| `... start postgres` | banco **saudável** |
-| `... stop backend` | backend **fora do ar**; banco e ML **desconhecido**; página continua visível |
-| `... start backend` | tudo saudável |
+| Ação                                                   | Esperado na página em até 15 s                                               |
+| ------------------------------------------------------ | ---------------------------------------------------------------------------- |
+| `docker compose -f infra/compose.yaml stop ml-service` | ML **fora do ar**; backend e banco saudáveis                                 |
+| `... start ml-service`                                 | ML **saudável**                                                              |
+| `... stop postgres`                                    | banco **fora do ar**                                                         |
+| `... start postgres`                                   | banco **saudável**                                                           |
+| `... stop backend`                                     | backend **fora do ar**; banco e ML **desconhecido**; página continua visível |
+| `... start backend`                                    | tudo saudável                                                                |
 
 ## 3. Nada de detalhes internos (SC-003)
 
@@ -105,5 +105,5 @@ cd frontend && pnpm lint && pnpm typecheck && pnpm test
 
 ## 9. Dependabot (História 5)
 
-Com `.github/dependabot.yml` na main, conferir em *Insights → Dependency graph → Dependabot* que
+Com `.github/dependabot.yml` na main, conferir em _Insights → Dependency graph → Dependabot_ que
 há execução semanal para maven, uv, npm (raiz e frontend), github-actions, docker e docker-compose.

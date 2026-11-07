@@ -59,7 +59,8 @@ expect_status() { # component expected
 }
 
 echo "== up =="
-compose up --build --wait --wait-timeout 240 -d >/dev/null
+BUILD_FLAG="--build"; [[ -n "${SMOKE_NO_BUILD:-}" ]] && BUILD_FLAG="--no-build"
+compose up "$BUILD_FLAG" --wait --wait-timeout 240 -d >/dev/null
 
 echo "== all components UP =="
 for c in backend database ml-service; do expect_status "$c" UP; done
