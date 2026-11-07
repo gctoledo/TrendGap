@@ -25,6 +25,8 @@ services:
       context: ../ml-service
     image: trendgap-ml:local
     restart: unless-stopped
+    environment:
+      OTEL_EXPORTER_OTLP_ENDPOINT: ${OTEL_EXPORTER_OTLP_ENDPOINT:-}
     healthcheck:
       test:
         - CMD
@@ -51,6 +53,7 @@ services:
       TRENDGAP_DB_USERNAME: ${TRENDGAP_DB_USERNAME:-}
       TRENDGAP_DB_PASSWORD: ${TRENDGAP_DB_PASSWORD:-}
       TRENDGAP_ML_BASE_URL: http://ml-service:8000
+      OTEL_EXPORTER_OTLP_ENDPOINT: ${OTEL_EXPORTER_OTLP_ENDPOINT:-}
     healthcheck:
       test:
         - CMD
@@ -81,6 +84,18 @@ services:
       timeout: 3s
       retries: 6
       start_period: 5s
+    networks: [internal, edge]
+
+  lgtm:
+    image: grafana/otel-lgtm:0.39.0
+    profiles: [observability]
+    restart: unless-stopped
+    volumes:
+      - ./observability/prometheus.yaml:/otel-lgtm/prometheus.yaml:ro
+    ports:
+      - "3000:3000"
+    expose:
+      - "4318"
     networks: [internal, edge]
 
 networks:
