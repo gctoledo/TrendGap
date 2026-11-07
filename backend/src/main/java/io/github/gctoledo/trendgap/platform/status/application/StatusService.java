@@ -4,6 +4,8 @@ import io.github.gctoledo.trendgap.platform.status.domain.ComponentHealth;
 import io.github.gctoledo.trendgap.platform.status.domain.ComponentName;
 import io.github.gctoledo.trendgap.platform.status.domain.HealthStatus;
 import io.github.gctoledo.trendgap.platform.status.domain.SystemStatus;
+import io.micrometer.context.ContextExecutorService;
+import io.micrometer.context.ContextSnapshotFactory;
 import java.time.Clock;
 import java.time.Duration;
 import java.util.ArrayList;
@@ -38,7 +40,11 @@ public class StatusService {
   public SystemStatus check() {
     var results = new ArrayList<ComponentHealth>();
     results.add(new ComponentHealth(ComponentName.BACKEND, HealthStatus.UP, clock.instant()));
-    var executor = Executors.newVirtualThreadPerTaskExecutor();
+    // Carries the request's trace context (MDC, span) into the probe threads.
+    var executor =
+        ContextExecutorService.wrap(
+            Executors.newVirtualThreadPerTaskExecutor(),
+            ContextSnapshotFactory.builder().build()::captureAll);
     try {
       var futures = new EnumMap<ComponentName, Future<ComponentHealth>>(ComponentName.class);
       for (ComponentName name : ComponentName.values()) {

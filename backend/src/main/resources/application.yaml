@@ -11,10 +11,26 @@ spring:
     hikari:
       connection-timeout: 2000
 
+logging:
+  structured:
+    format:
+      console: ecs
+    ecs:
+      service:
+        name: backend
+    json:
+      # Boot's ECS writer emits traceId/spanId; the project contract uses ECS names (data-model §5).
+      rename:
+        traceId: trace.id
+        spanId: span.id
+
 server:
   port: ${trendgap.http.port:8080}
 
 management:
+  tracing:
+    sampling:
+      probability: 1.0
   server:
     port: ${trendgap.management.port:8081}
   endpoints:

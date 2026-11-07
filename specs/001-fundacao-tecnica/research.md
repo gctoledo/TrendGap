@@ -95,6 +95,7 @@ GitHub Releases). Dependabot assume as atualizações daqui em diante.
 - **Decisão**: `logging.structured.format.console=ecs`, `logging.structured.ecs.service.name=backend`.
 - **Justificativa**: o formato ECS já inclui `@timestamp`, `log.level`, `service.name`, `message`,
   `trace.id` e `span.id` (vindos do MDC do Micrometer Tracing), cobrindo FR-015 sem dependência.
+- **Resolvido (T054)**: o ECS do Boot 4.1 emite `traceId`/`spanId`; `logging.structured.json.rename` os converte para `trace.id`/`span.id`. O contexto de trace não atravessa `newVirtualThreadPerTaskExecutor` sozinho: `StatusService` usa `ContextExecutorService` (context-propagation).
 - O serviço de ML usa os mesmos nomes de campo (ver data-model.md, "Formato de log"), para que a
   consulta na pilha local seja igual nos dois.
 
