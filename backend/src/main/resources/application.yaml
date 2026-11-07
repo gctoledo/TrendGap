@@ -9,7 +9,7 @@ spring:
     username: ${trendgap.db.username:}
     password: ${trendgap.db.password:}
     hikari:
-      connection-timeout: 2s
+      connection-timeout: 2000
 
 server:
   port: ${trendgap.http.port:8080}
@@ -17,3 +17,16 @@ server:
 management:
   server:
     port: ${trendgap.management.port:8081}
+  endpoints:
+    web:
+      exposure:
+        include: health,prometheus
+  endpoint:
+    health:
+      show-details: never
+      show-components: never
+      probes:
+        enabled: true
+      group:
+        readiness:
+          include: readinessState,db
