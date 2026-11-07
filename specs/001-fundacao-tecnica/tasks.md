@@ -171,7 +171,7 @@ tarefa que usa o que ele cobre (ver Dependências). Verificação comum: arquivo
 
 **Teste independente**: quickstart §9.
 
-- [ ] T065 [P] [US5] `.github/dependabot.yml`: semanal para `maven` (/backend), `uv` (/ml-service), `npm` (/ e /frontend), `github-actions` (/), `docker` (/backend, /ml-service, /frontend) e `docker-compose` (/infra); agrupar minor/patch por ecossistema. Verificação: `python3 -c "import yaml;d=yaml.safe_load(open('.github/dependabot.yml'));assert len(d['updates'])>=9"`
+- [x] T065 [P] [US5] `.github/dependabot.yml`: semanal para `maven` (/backend), `uv` (/ml-service), `npm` (/ e /frontend), `github-actions` (/), `docker` (/backend, /ml-service, /frontend) e `docker-compose` (/infra); agrupar minor/patch por ecossistema. Verificação: `python3 -c "import yaml;d=yaml.safe_load(open('.github/dependabot.yml'));assert len(d['updates'])>=9"`
 
 ---
 
