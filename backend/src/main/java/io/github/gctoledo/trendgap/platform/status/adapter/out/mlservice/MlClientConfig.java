@@ -3,6 +3,7 @@ package io.github.gctoledo.trendgap.platform.status.adapter.out.mlservice;
 import io.github.gctoledo.trendgap.platform.config.TrendGapProperties;
 import io.github.gctoledo.trendgap.platform.mlclient.ApiClient;
 import io.github.gctoledo.trendgap.platform.mlclient.api.HealthApi;
+import java.net.http.HttpClient;
 import java.util.Objects;
 import org.springframework.boot.http.client.ClientHttpRequestFactoryBuilder;
 import org.springframework.boot.http.client.HttpClientSettings;
@@ -24,7 +25,11 @@ public class MlClientConfig {
     RestClient restClient =
         builder
             .baseUrl(baseUrl)
-            .requestFactory(ClientHttpRequestFactoryBuilder.detect().build(settings))
+            .requestFactory(
+                ClientHttpRequestFactoryBuilder.jdk()
+                    // The ML service speaks plain HTTP/1.1: skip the h2c upgrade attempt.
+                    .withHttpClientCustomizer(client -> client.version(HttpClient.Version.HTTP_1_1))
+                    .build(settings))
             .build();
     var apiClient = new ApiClient(restClient);
     // The generated ApiClient ignores the RestClient baseUrl and uses the contract server.

@@ -28,6 +28,9 @@ server:
   port: ${trendgap.http.port:8080}
 
 management:
+  opentelemetry:
+    resource-attributes:
+      service.name: backend
   tracing:
     sampling:
       probability: 1.0
