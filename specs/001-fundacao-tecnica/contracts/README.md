@@ -2,7 +2,7 @@
 
 | Arquivo | Interface | Consumidor | Fonte da verdade |
 | --- | --- | --- | --- |
-| [ml-service.openapi.yaml](ml-service.openapi.yaml) | HTTP do serviço de ML | backend (cliente gerado) | `contracts/ml-service.openapi.yaml` na raiz, depois da tarefa do contrato |
+| [contracts/ml-service.openapi.yaml](../../../contracts/ml-service.openapi.yaml) | HTTP do serviço de ML | backend (cliente gerado) | `contracts/ml-service.openapi.yaml` na raiz (movido do rascunho) |
 | [status-api.openapi.yaml](status-api.openapi.yaml) | `GET /api/status` do backend | frontend | este arquivo (desenho); o teste `@WebMvcTest` do controller confere campos, enums e ordem por JSONPath |
 
 Superfície HTTP exposta fora da rede interna do Compose: só o frontend (nginx), que serve a SPA e
