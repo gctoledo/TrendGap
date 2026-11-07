@@ -3,6 +3,39 @@ pre-commit:
   commands:
     gitleaks:
       run: gitleaks git --pre-commit --staged --redact --verbose
+    spotless:
+      root: backend/
+      glob: "backend/**/*.java"
+      run: ./mvnw -B -q spotless:apply
+      stage_fixed: true
+    ruff:
+      root: ml-service/
+      glob: "ml-service/**/*.py"
+      run: uv run ruff format {staged_files} && uv run ruff check --fix {staged_files}
+      stage_fixed: true
+    prettier:
+      root: frontend/
+      glob: "frontend/**/*.{ts,tsx,js,mjs,json,css,html,md}"
+      exclude: "frontend/pnpm-lock.yaml"
+      run: pnpm exec prettier --write {staged_files}
+      stage_fixed: true
+    eslint:
+      root: frontend/
+      glob: "frontend/**/*.{ts,tsx,js,mjs}"
+      run: pnpm exec eslint --fix {staged_files}
+      stage_fixed: true
+
+pre-push:
+  parallel: true
+  commands:
+    mypy:
+      root: ml-service/
+      glob: "ml-service/**/*.py"
+      run: uv run mypy src
+    tsc:
+      root: frontend/
+      glob: "frontend/**/*.{ts,tsx}"
+      run: pnpm exec tsc -b --noEmit
 
 commit-msg:
   commands:
