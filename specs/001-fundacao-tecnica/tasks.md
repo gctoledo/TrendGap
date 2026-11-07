@@ -79,8 +79,8 @@ tarefa que usa o que ele cobre (ver Dependências). Verificação comum: arquivo
 
 ### ML: `/health`
 
-- [ ] T031 [P] [US1] Teste: `ml-service/tests/test_health.py` (`TestClient`): `GET /health` → 200 com corpo exato `{"status":"UP"}`. Vermelha. Verificação: `cd ml-service && uv run pytest tests/test_health.py` (falha esperada)
-- [ ] T032 [US1] Impl: `ml-service/src/trendgap_ml/api/health.py` e `app.py` (`create_app()`), `__main__.py` chama uvicorn com `access_log=False`. Verificação: `cd ml-service && uv run ruff check . && uv run mypy src && uv run pytest`
+- [x] T031 [P] [US1] Teste: `ml-service/tests/test_health.py` (`TestClient`): `GET /health` → 200 com corpo exato `{"status":"UP"}`. Vermelha. Verificação: `cd ml-service && uv run pytest tests/test_health.py` (falha esperada)
+- [x] T032 [US1] Impl: `ml-service/src/trendgap_ml/api/health.py` e `app.py` (`create_app()`), `__main__.py` chama uvicorn com `access_log=False`. Verificação: `cd ml-service && uv run ruff check . && uv run mypy src && uv run pytest`
 - [ ] T033 [US1] Teste de contrato: `ml-service/tests/test_contract.py` (schemathesis contra `contracts/ml-service.openapi.yaml` + rotas do app ⇔ contrato). Verificação: `cd ml-service && uv run pytest tests/test_contract.py`
 
 ### Frontend: página de status
