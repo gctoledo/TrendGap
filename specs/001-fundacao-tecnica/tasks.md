@@ -51,7 +51,7 @@ tarefa que usa o que ele cobre (ver Dependências). Verificação comum: arquivo
 **Configuração com falha rápida (ML)**
 
 - [x] T018 [P] Teste: `ml-service/tests/test_settings.py`: `TRENDGAP_ML_PORT` inteiro 1–65535 (padrão 8000), `TRENDGAP_ML_LOG_LEVEL` ∈ {DEBUG, INFO, WARNING, ERROR} (padrão INFO), `OTEL_EXPORTER_OTLP_ENDPOINT` URL absoluta ou ausente; erro cita variável e regra, sem `input_value`; valor vazio de `OTEL_EXPORTER_OTLP_ENDPOINT` conta como ausente; `__main__` sai com código ≠ 0. Vermelha. Verificação: `cd ml-service && uv run pytest tests/test_settings.py` (falha esperada)
-- [ ] T019 Impl: `ml-service/src/trendgap_ml/settings.py` (pydantic-settings, prefixo `TRENDGAP_ML_`) e `__main__.py` (valida antes do uvicorn, reformata `ValidationError`, saída 1). Verificação: `cd ml-service && uv run ruff check . && uv run mypy src && uv run pytest tests/test_settings.py`
+- [x] T019 Impl: `ml-service/src/trendgap_ml/settings.py` (pydantic-settings, prefixo `TRENDGAP_ML_`) e `__main__.py` (valida antes do uvicorn, reformata `ValidationError`, saída 1). Verificação: `cd ml-service && uv run ruff check . && uv run mypy src && uv run pytest tests/test_settings.py`
 
 **Checkpoint**: backend e ML recusam configuração ruim; migração V1 validada.
 

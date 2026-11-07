@@ -3,7 +3,9 @@ name = "trendgap-ml"
 version = "0.0.1"
 description = "TrendGap ML service"
 requires-python = ">=3.13,<3.14"
-dependencies = []
+dependencies = [
+    "pydantic-settings>=2.16.2",
+]
 
 [dependency-groups]
 dev = ["ruff", "mypy", "pytest"]
