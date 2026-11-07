@@ -18,7 +18,7 @@ fora de contêiner: JDK 25, uv, Node 24 + pnpm (via `corepack`), gitleaks e left
 
 ```sh
 cp .env.example .env   # preencha as variáveis obrigatórias com valores locais
-docker compose -f infra/compose.yaml up --wait
+docker compose --env-file .env -f infra/compose.yaml up --wait
 ```
 
 Abra <http://localhost:8080> (ou `TRENDGAP_WEB_PORT`): a página de status mostra backend, banco e

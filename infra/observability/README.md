@@ -10,7 +10,7 @@ internamente.
 2. Suba com o profile:
 
    ```bash
-   docker compose -f infra/compose.yaml --profile observability up --wait
+   docker compose --env-file .env -f infra/compose.yaml --profile observability up --wait
    ```
 
 3. Abra o Grafana em <http://localhost:3000> (usuário e senha padrão da imagem: `admin`/`admin`;

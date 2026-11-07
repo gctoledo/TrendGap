@@ -77,7 +77,7 @@ ML: pytest de `Settings`).
 ## 6. Observabilidade (História 4)
 
 ```sh
-docker compose -f infra/compose.yaml --profile observability up -d --wait
+docker compose --env-file .env -f infra/compose.yaml --profile observability up -d --wait
 # definir OTEL_EXPORTER_OTLP_ENDPOINT=http://lgtm:4318 no .env antes de subir
 ```
 

@@ -11,7 +11,7 @@ contracts/ OpenAPI · infra/ Docker Compose e observabilidade · scripts/ smoke 
 - Backend: `cd backend && ./mvnw spotless:apply verify` (só unitários: `./mvnw test`)
 - ML: `cd ml-service && uv run ruff check . && uv run mypy src && uv run pytest`
 - Frontend: `cd frontend && pnpm lint && pnpm typecheck && pnpm test`
-- Sistema: `docker compose -f infra/compose.yaml up --wait` (profile opcional: `--profile observability`)
+- Sistema: `docker compose --env-file .env -f infra/compose.yaml up --wait` (profile opcional: `--profile observability`)
 - Smoke ponta a ponta: `scripts/smoke.sh` (`SMOKE_OBSERVABILITY=1` com o profile)
 - Verificações: `scripts/check-env-example.sh`, `scripts/check-failfast.sh`, `scripts/test-gitleaks.sh`
 - Hooks: `pnpm install && lefthook install` (gitleaks, formatadores, commitlint)
