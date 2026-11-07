@@ -181,8 +181,8 @@ tarefa que usa o que ele cobre (ver Dependências). Verificação comum: arquivo
 
 ### Documentação (scribe)
 
-- [ ] T066 Atualizar `CLAUDE.md`: estrutura real (`backend/`, `ml-service/`, `frontend/`, `contracts/`, `infra/`, `scripts/`), comandos de verificação confirmados, `scripts/smoke.sh`, `scripts/test-gitleaks.sh`, `lefthook`. Verificação: `grep -q 'scripts/smoke.sh' CLAUDE.md && grep -q 'ci-ok' CLAUDE.md`
-- [ ] T067 Criar/atualizar `README.md` com "Como rodar": pré-requisitos, `cp .env.example .env`, `docker compose -f infra/compose.yaml up --wait`, URL da página de status, profile `observability`, `scripts/smoke.sh`, verificação por componente. Verificação: `grep -q 'compose.yaml' README.md && grep -q 'observability' README.md`
+- [x] T066 Atualizar `CLAUDE.md`: estrutura real (`backend/`, `ml-service/`, `frontend/`, `contracts/`, `infra/`, `scripts/`), comandos de verificação confirmados, `scripts/smoke.sh`, `scripts/test-gitleaks.sh`, `lefthook`. Verificação: `grep -q 'scripts/smoke.sh' CLAUDE.md && grep -q 'ci-ok' CLAUDE.md`
+- [x] T067 Criar/atualizar `README.md` com "Como rodar": pré-requisitos, `cp .env.example .env`, `docker compose -f infra/compose.yaml up --wait`, URL da página de status, profile `observability`, `scripts/smoke.sh`, verificação por componente. Verificação: `grep -q 'compose.yaml' README.md && grep -q 'observability' README.md`
 
 ### Proteção da main (check obrigatório `ci-ok`)
 

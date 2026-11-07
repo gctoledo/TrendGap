@@ -3,15 +3,19 @@
 Radar que detecta tendências que cresceram lá fora e ainda não chegaram ao Brasil.
 A constituição (.specify/memory/constitution.md) prevalece sobre tudo. Decisões: docs/decision-log.md e docs/adr/.
 
-## Estrutura (pastas surgem conforme as sprints)
+## Estrutura
 backend/ Java 25, Spring Boot 4.1, Maven wrapper · ml-service/ Python 3.13, uv, FastAPI · frontend/ React+TS+Vite, pnpm
-contracts/ OpenAPI · infra/ Docker Compose · specs/ Spec Kit · docs/ ADRs e documentação
+contracts/ OpenAPI · infra/ Docker Compose e observabilidade · scripts/ smoke e verificações · specs/ Spec Kit · docs/ ADRs e documentação
 
 ## Comandos
 - Backend: `cd backend && ./mvnw spotless:apply verify` (só unitários: `./mvnw test`)
 - ML: `cd ml-service && uv run ruff check . && uv run mypy src && uv run pytest`
 - Frontend: `cd frontend && pnpm lint && pnpm typecheck && pnpm test`
-- Sistema: `docker compose -f infra/compose.yaml up`
+- Sistema: `docker compose -f infra/compose.yaml up --wait` (profile opcional: `--profile observability`)
+- Smoke ponta a ponta: `scripts/smoke.sh` (`SMOKE_OBSERVABILITY=1` com o profile)
+- Verificações: `scripts/check-env-example.sh`, `scripts/check-failfast.sh`, `scripts/test-gitleaks.sh`
+- Hooks: `pnpm install && lefthook install` (gitleaks, formatadores, commitlint)
+- CI: o check obrigatório da main é `ci-ok` (.github/workflows/ci.yml)
 - Sempre pnpm (nunca npm) e ./mvnw (nunca mvn).
 
 ## Regras inegociáveis
