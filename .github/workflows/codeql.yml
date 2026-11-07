@@ -42,4 +42,6 @@ jobs:
           category: "/language:${{ matrix.language }}"
       - name: Job duration
         if: always()
-        run: echo "codeql ${{ matrix.language }} took $(( $(date +%s) - JOB_START ))s" >> "$GITHUB_STEP_SUMMARY"
+        env:
+          LANGUAGE: ${{ matrix.language }}
+        run: echo "codeql $LANGUAGE took $(( $(date +%s) - JOB_START ))s" >> "$GITHUB_STEP_SUMMARY"
