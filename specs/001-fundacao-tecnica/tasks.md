@@ -154,7 +154,7 @@ tarefa que usa o que ele cobre (ver Dependências). Verificação comum: arquivo
 - [x] T059 [P] [US4] Teste: `ml-service/tests/test_logging.py`: cada linha é JSON válido (ECS) com `@timestamp`, nível, componente, mensagem; `trace.id` presente com span ativo; nenhum campo de segredo. Vermelha. Verificação: `cd ml-service && uv run pytest tests/test_logging.py` (falha esperada)
 - [x] T060 [US4] Impl: `ml-service/src/trendgap_ml/logging.py` (formatador JSON na stdlib). Verificação: `cd ml-service && uv run ruff check . && uv run mypy src && uv run pytest tests/test_logging.py`
 - [x] T061 [US4] Teste: `ml-service/tests/test_telemetry.py`: requisição com `traceparent` gera log com o mesmo `trace.id`; `/metrics` expõe contagem e duração de requisições; OTLP só com `OTEL_EXPORTER_OTLP_ENDPOINT`. Vermelha. Verificação: `cd ml-service && uv run pytest tests/test_telemetry.py` (falha esperada)
-- [ ] T062 [US4] Impl: `ml-service/src/trendgap_ml/telemetry.py` (Tracer/Meter/LoggerProvider, instrumentação FastAPI, exportador Prometheus em `/metrics`, middleware de log por requisição dentro do span) ligado em `app.py`. Verificação: `cd ml-service && uv run ruff check . && uv run mypy src && uv run pytest`
+- [x] T062 [US4] Impl: `ml-service/src/trendgap_ml/telemetry.py` (Tracer/Meter/LoggerProvider, instrumentação FastAPI, exportador Prometheus em `/metrics`, middleware de log por requisição dentro do span) ligado em `app.py`. Verificação: `cd ml-service && uv run ruff check . && uv run mypy src && uv run pytest`
 
 ### Infra
 
