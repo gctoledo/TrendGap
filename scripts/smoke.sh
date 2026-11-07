@@ -27,7 +27,7 @@ fi
 
 env_value() { grep -E "^$1=" "$ENV_FILE" | head -1 | cut -d= -f2-; }
 
-compose() { docker compose --env-file "$ENV_FILE" -f infra/compose.yaml "$@"; }
+compose() { docker compose -p trendgap-smoke --env-file "$ENV_FILE" -f infra/compose.yaml "$@"; }
 
 PORT="$(env_value TRENDGAP_WEB_PORT)"
 BASE="http://localhost:${PORT:-8080}"
